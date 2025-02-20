@@ -11,11 +11,6 @@ services:
       - .:/app
     ports:
       - "8000:8000"
-    depends_on:
-      - postgres
-      - rabbitmq
-      - weaviate
-
 
   celery_worker_embeddings:
     build:
@@ -26,10 +21,6 @@ services:
     command: ["worker", "--loglevel=info", "--queues=embeddings"]
     volumes:
       - .:/app
-    depends_on:
-      - django
-      - rabbitmq
-
 
   celery_worker_queries:
     build:
@@ -40,9 +31,7 @@ services:
     command: ["worker", "--loglevel=info", "--queues=queries"]
     volumes:
       - .:/app
-    depends_on:
-      - django
-      - rabbitmq
+
 
 
   # rabbitmq:
@@ -86,7 +75,3 @@ services:
   #     PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
   #     ENABLE_API_BASED_MODULES: 'true'
   #     CLUSTER_HOSTNAME: 'node1'
-
-volumes:
-  postgres_data:
-  weaviate_data:
