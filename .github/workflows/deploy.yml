@@ -52,7 +52,7 @@ jobs:
           IMAGE_REPO="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
           
           # Build images using docker-compose
-          docker-compose build
+          docker compose -f devops/docker-compose.yml build
           
           # Tagging images
           docker tag django_app $IMAGE_REPO/django-app:latest
