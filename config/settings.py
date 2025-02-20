@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-*=#t@zs_e%w$t8^u**7#w=noo=jr^ij&fx)qu&k!c-id(((9w9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["http://localhost:3000", "http://localhost:8000", "localhost"]
+ALLOWED_HOSTS = ["http://localhost:3000", "http://localhost:8000", "localhost", "54.235.61.83"]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Frontend React/Vue/Next.js dev server
