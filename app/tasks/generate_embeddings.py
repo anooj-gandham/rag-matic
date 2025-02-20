@@ -15,7 +15,7 @@ def process_file_for_embeddings(file_id):
     """
     try:
         file_instance = File.objects.get(id=file_id)
-        texts, ext = parse_file_from_url(file_instance.url)
+        texts, ext = parse_file_from_url(file_instance.url, file_instance.file_type)
         MAX_TOKENS_PER_CHUNK = 800
         chunks = generate_chunks(texts, max_tokens=MAX_TOKENS_PER_CHUNK)
         embeddings = [generate_embeddings(chunk) for chunk in chunks]

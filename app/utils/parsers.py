@@ -37,8 +37,8 @@ def download_file(url, suffix=None):
                 suffix = '.txt'
             else:
                 raise ValueError("Unable to determine file type from URL or Content-Type")
-    print("extension: ", ext)
     try:          
+        suffix = f".{suffix}"
         # Create a temporary file. delete=False allows us to reopen it by path.
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
         temp_file.write(response.content)
@@ -227,12 +227,12 @@ def parse_json(file_path):
     """
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
+            return [json.dumps(json.load(f))]
     except Exception as e:
         print("Error parsing JSON file.")
         raise e
 
-def parse_file(file_path):
+def parse_file(file_path, ext):
     """
     Detect the file type based on its extension and parse accordingly.
     
@@ -241,19 +241,19 @@ def parse_file(file_path):
     Returns:
         The extracted text (for PDF, DOCX, TXT) or the parsed JSON object.
     """
-    ext = os.path.splitext(file_path)[1].lower()
-    if ext == '.pdf':
+    ext = ext.lower()
+    if ext == 'pdf':
         return parse_pdf_with_fallback(file_path), ext
-    elif ext == '.docx':
+    elif ext == 'docx':
         return parse_docx(file_path), ext
-    elif ext == '.txt':
+    elif ext == 'txt':
         return parse_txt(file_path), ext
-    elif ext == '.json':
+    elif ext == 'json':
         return parse_json(file_path), ext
     else:
         raise ValueError(f"Unsupported file extension: {ext}")
 
-def parse_file_from_url(url):
+def parse_file_from_url(url, type):
     """
     Download a file from a URL and parse it automatically.
     
@@ -264,9 +264,9 @@ def parse_file_from_url(url):
     """
     # Determine suffix from URL (if possible)
     base = url.split('?')[0]
-    temp_file_path = download_file(url)
+    temp_file_path = download_file(url, type)
     try:
-        result, ext = parse_file(temp_file_path)
+        result, ext = parse_file(temp_file_path, type)
         os.remove(temp_file_path)
 
 

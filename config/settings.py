@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ["http://localhost:3000", "http://localhost:8000", "localhost", 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Frontend React/Vue/Next.js dev server
     "http://127.0.0.1:3000",
+    "http://rag-matic-ui-bucket.s3-website-us-east-1.amazonaws.com",
 ]
 
 # Allow all methods (GET, POST, PUT, DELETE)
