@@ -2,7 +2,7 @@
 services:
   django:
     build:
-      context: ./django
+      context: .
       dockerfile: Dockerfile
     container_name: django_app
     command: ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
@@ -18,7 +18,7 @@ services:
 
   celery_worker_embeddings:
     build:
-      context: ./celery
+      context: .
       dockerfile: Dockerfile.celery
     container_name: celery_worker_embeddings
     command: ["worker", "--loglevel=info", "--queues=embeddings"]
@@ -31,7 +31,7 @@ services:
 
   celery_worker_queries:
     build:
-      context: ./celery
+      context: .
       dockerfile: Dockerfile.celery
     container_name: celery_worker_queries
     command: ["worker", "--loglevel=info", "--queues=queries"]
