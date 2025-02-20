@@ -30,4 +30,4 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the Django application
-CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
+CMD ["poetry", "run", "python", "manage.py", "makemigrations", "&&", "poetry", "run", "python", "manage.py", "migrate", "&&", "poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
