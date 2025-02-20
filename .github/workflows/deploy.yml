@@ -93,21 +93,3 @@ jobs:
           docker push $IMAGE_REPO/postgres:latest
           docker push $IMAGE_REPO/weaviate:latest
           
-  deploy:
-    name: Deploy to EC2
-    runs-on: ubuntu-latest
-    needs: build-and-push  # Run after build-and-push job completes
-
-    steps:
-      - name: SSH into EC2 and Deploy Containers
-        uses: appleboy/ssh-action@v0.1.2
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            IMAGE_REPO="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
-
-            # Load .env file
-            bash script.sh
