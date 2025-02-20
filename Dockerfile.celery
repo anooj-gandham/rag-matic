@@ -20,7 +20,7 @@ RUN pip install --upgrade pip && pip install poetry
 COPY pyproject.toml poetry.lock ./
 
 # Install dependencies
-RUN poetry install --no-dev --no-interaction --no-ansi
+RUN poetry install
 
 # Copy the rest of the application code
 COPY . .
