@@ -58,9 +58,29 @@ jobs:
           docker tag django-app:latest $IMAGE_REPO/django-app:latest
           docker tag celery_worker_embeddings:latest $IMAGE_REPO/celery-embeddings:latest
           docker tag celery_worker_queries:latest $IMAGE_REPO/celery-queries:latest
-          docker tag rabbitmq $IMAGE_REPO/rabbitmq:latest
-          docker tag postgres $IMAGE_REPO/postgres:latest
-          docker tag weaviate $IMAGE_REPO/weaviate:latest
+          # docker tag rabbitmq $IMAGE_REPO/rabbitmq:latest
+          # docker tag postgres $IMAGE_REPO/postgres:latest
+          # docker tag weaviate $IMAGE_REPO/weaviate:latest
+
+      - name: Pull and Tag RabbitMQ Image
+        run: |
+          IMAGE_REPO="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          docker pull rabbitmq:management
+          docker tag rabbitmq:management $IMAGE_REPO/rabbitmq:latest
+
+      - name: Pull and Tag Postgres Image
+        run: |
+          IMAGE_REPO="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          docker pull postgres:15
+          docker tag postgres:15 $IMAGE_REPO/postgres:latest
+  
+      - name: Pull and Tag Weaviate Image
+        run: |
+          IMAGE_REPO="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          docker pull cr.weaviate.io/semitechnologies/weaviate:1.28.5
+          docker tag cr.weaviate.io/semitechnologies/weaviate:1.28.5 $IMAGE_REPO/weaviate:latest
+
+        
 
       - name: Push Docker Images to AWS ECR
         run: |
