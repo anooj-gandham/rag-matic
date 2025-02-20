@@ -26,4 +26,4 @@ RUN poetry install
 COPY . .
 
 # Command to run the Celery worker
-ENTRYPOINT ["celery", "-A", "config"]
+ENTRYPOINT ["poetry", "run", "celery", "-A", "config"]
