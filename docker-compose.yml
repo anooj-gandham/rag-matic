@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: django-app:latest
     container_name: django-app
     command: ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
     volumes:
@@ -20,6 +21,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.celery
+    image: celery_worker_embeddings:latest
     container_name: celery_worker_embeddings
     command: ["worker", "--loglevel=info", "--queues=embeddings"]
     volumes:
@@ -33,6 +35,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.celery
+    image: celery_worker_queries:latest
     container_name: celery_worker_queries
     command: ["worker", "--loglevel=info", "--queues=queries"]
     volumes:

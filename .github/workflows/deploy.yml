@@ -55,9 +55,9 @@ jobs:
           docker compose build
           
           # Tagging images
-          docker tag django-app $IMAGE_REPO/django-app:latest
-          docker tag celery_worker_embeddings $IMAGE_REPO/celery-embeddings:latest
-          docker tag celery_worker_queries $IMAGE_REPO/celery-queries:latest
+          docker tag django-app:latest $IMAGE_REPO/django-app:latest
+          docker tag celery_worker_embeddings:latest $IMAGE_REPO/celery-embeddings:latest
+          docker tag celery_worker_queries:latest $IMAGE_REPO/celery-queries:latest
           docker tag rabbitmq $IMAGE_REPO/rabbitmq:latest
           docker tag postgres $IMAGE_REPO/postgres:latest
           docker tag weaviate $IMAGE_REPO/weaviate:latest
