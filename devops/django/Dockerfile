@@ -16,14 +16,14 @@ RUN apt-get update && apt-get install -y \
 # Install Poetry
 RUN pip install --upgrade pip && pip install poetry
 
-# Copy the pyproject.toml and poetry.lock files
-COPY pyproject.toml poetry.lock ./
+# Copy the pyproject.toml and poetry.lock files from the parent directory
+COPY ../../pyproject.toml ../../poetry.lock ./
 
-# Install Python dependencies
-RUN poetry config virtualenvs.create false && poetry install --no-dev --no-interaction --no-ansi
+# Install dependencies
+RUN poetry install --no-dev --no-interaction --no-ansi
 
-# Copy the application code
-COPY . .
+# Copy the rest of the application code
+COPY ../../ .
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
