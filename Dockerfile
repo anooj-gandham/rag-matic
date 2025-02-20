@@ -17,13 +17,13 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --upgrade pip && pip install poetry
 
 # Copy the pyproject.toml and poetry.lock files from the parent directory
-COPY ../../pyproject.toml ../../poetry.lock ./
+COPY pyproject.toml poetry.lock ./
 
 # Install dependencies
 RUN poetry install --no-dev --no-interaction --no-ansi
 
 # Copy the rest of the application code
-COPY ../../ .
+COPY . .
 
 # Collect static files
 RUN python manage.py collectstatic --noinput
