@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "rag-matic"
+version = "0.1.0"
+description = "A Django-based Retrieval Augmented Generation (RAG) system with modular apps for document ingestion, embedding generation, and retrieval using Weaviate. The project follows a scalable structure with API endpoints, background tasks, and cloud deployment support."
+authors = ["anooj-gandham <anoojgandham@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+django = "^5.1.6"
+psycopg2-binary = "^2.9.10"
+celery = "^5.4.0"
+djangorestframework = "^3.15.2"
+drf-yasg = "^1.21.8"
+weaviate-client = "^4.10.4"
+openai = "^1.63.0"
+numpy = "^2.2.3"
+boto3 = "^1.36.22"
+requests = "^2.32.3"
+pypdf2 = "^3.0.1"
+pdf2image = "^1.17.0"
+pytesseract = "^0.3.13"
+tiktoken = "^0.9.0"
+pdfminer-six = "^20240706"
+python-docx = "^1.1.2"
+django-celery-results = "^2.5.1"
+python-dotenv = "^1.0.1"
+langchain-openai = "^0.3.6"
+django-cors-headers = "^4.7.0"
+awscli = "^1.37.23"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.4"
+pytest-django = "^4.10.0"
+watchdog = "^6.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

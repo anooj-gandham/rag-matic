@@ -1,0 +1,90 @@
+version: '3.8'
+
+services:
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django_app
+    command: ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - rabbitmq
+      - weaviate
+
+
+  celery_worker_embeddings:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    container_name: celery_worker_embeddings
+    command: ["worker", "--loglevel=info", "--queues=embeddings"]
+    volumes:
+      - .:/app
+    depends_on:
+      - django
+      - rabbitmq
+
+
+  celery_worker_queries:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery
+    container_name: celery_worker_queries
+    command: ["worker", "--loglevel=info", "--queues=queries"]
+    volumes:
+      - .:/app
+    depends_on:
+      - django
+      - rabbitmq
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.28.5
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - '8080'
+      - --scheme
+      - http
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    volumes:
+      - weaviate_data:/var/lib/weaviate
+    restart: on-failure:0
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      ENABLE_API_BASED_MODULES: 'true'
+      CLUSTER_HOSTNAME: 'node1'
+
+volumes:
+  postgres_data:
+  weaviate_data:

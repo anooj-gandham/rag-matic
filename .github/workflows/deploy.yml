@@ -1,0 +1,74 @@
+name: Deploy Docker Images to AWS ECR
+
+on:
+  push:
+    branches:
+      - main  # Change to your main branch name
+
+jobs:
+  build-and-push:
+    name: Build and Push Docker Images to AWS ECR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to AWS ECR
+        run: |
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+
+      - name: Create .env File for Docker
+        run: |
+          echo "DEBUG=${{ secrets.DEBUG }}" >> .env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+          echo "ENVIRONMENT=${{ secrets.ENVIRONMENT }}" >> .env
+          echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env
+          echo "CELERY_RESULT_BACKEND=${{ secrets.CELERY_RESULT_BACKEND }}" >> .env
+          echo "WEAVIATE_HOST=${{ secrets.WEAVIATE_HOST }}" >> .env
+          echo "AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}" >> .env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
+          echo "S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }}" >> .env
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
+
+      - name: Build and Tag Docker Images
+        run: |
+          IMAGE_REPO="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          
+          # Build images using docker-compose
+          docker-compose build
+          
+          # Tagging images
+          docker tag django_app $IMAGE_REPO/django-app:latest
+          docker tag celery_worker_embeddings $IMAGE_REPO/celery-embeddings:latest
+          docker tag celery_worker_queries $IMAGE_REPO/celery-queries:latest
+          docker tag rabbitmq $IMAGE_REPO/rabbitmq:latest
+          docker tag postgres $IMAGE_REPO/postgres:latest
+          docker tag weaviate $IMAGE_REPO/weaviate:latest
+
+      - name: Push Docker Images to AWS ECR
+        run: |
+          IMAGE_REPO="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com"
+          
+          docker push $IMAGE_REPO/django-app:latest
+          docker push $IMAGE_REPO/celery-embeddings:latest
+          docker push $IMAGE_REPO/celery-queries:latest
+          docker push $IMAGE_REPO/rabbitmq:latest
+          docker push $IMAGE_REPO/postgres:latest
+          docker push $IMAGE_REPO/weaviate:latest
